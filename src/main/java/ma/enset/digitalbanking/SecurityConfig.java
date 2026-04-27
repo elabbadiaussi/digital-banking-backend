@@ -11,10 +11,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/h2-console/**",
+                                "/customers/**",
+                                "/accounts/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable())); // ← obligatoire pour H2
+                        .frameOptions(frame -> frame.disable()));
         return http.build();
     }
 }
